@@ -1,8 +1,6 @@
 'use client';
 
-import Image from "next/image";
-import { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [template, setTemplate] = useState({
@@ -23,17 +21,17 @@ export default function Home() {
   const [extras, setExtras] = useState([{ name: '', price: '' }]);
   const [total, setTotal] = useState(0);
 
-  const handleTemplateChange = (e) => {
+  const handleTemplateChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setTemplate({ ...template, [e.target.name]: e.target.value });
   };
 
-  const handleCustomerChange = (e) => {
+  const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   };
 
-  const handleExtraChange = (i, field, value) => {
+  const handleExtraChange = (i: number, field: string, value: string) => {
     const newExtras = [...extras];
-    newExtras[i][field] = value;
+    newExtras[i][field as keyof typeof extras[number]] = value;
     setExtras(newExtras);
   };
 
@@ -41,11 +39,11 @@ export default function Home() {
     setExtras([...extras, { name: '', price: '' }]);
   };
 
-  const removeExtra = (index) => {
+  const removeExtra = (index: number) => {
     setExtras(extras.filter((_, i) => i !== index));
   };
 
-  const renderTemplate = (tpl, data) => {
+  const renderTemplate = (tpl: string, data: { [key: string]: any }) => {
     return tpl
       .replace(/{{\s*name\s*}}/g, data.name || '')
       .replace(/{{\s*number\s*}}/g, data.number || '')
@@ -57,7 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     const main = parseFloat(customer.price) || 0;
-    const extraTotal = extras.reduce((sum, e) => sum + parseFloat(e.price || 0), 0);
+    const extraTotal = extras.reduce((sum, e) => sum + parseFloat(e.price?.toString() || '0'), 0);
     setTotal(main + extraTotal);
   }, [customer, extras]);
 
@@ -98,30 +96,30 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       {/* Template Form */}
-      <div className={styles.formBox}>
+      <div className="formBox">
         <h2>Template Details</h2>
         {Object.keys(template).map(key => (
-          key === 'body' || key.includes('notes') ? (
-            <textarea key={key} name={key} value={template[key]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
+          (key === 'body' || key.includes('notes')) ? (
+            <textarea key={key} name={key} value={template[key as keyof typeof template]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
           ) : (
-            <input key={key} name={key} value={template[key]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
+            <input key={key} name={key} value={template[key as keyof typeof template]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
           )
         ))}
       </div>
 
       {/* Customer Form */}
-      <div className={styles.formBox}>
+      <div className="formBox">
         <h2>Customer Details</h2>
         <input name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Customer Name" />
         <input name="number" value={customer.number} onChange={handleCustomerChange} placeholder="Customer Number" />
         <input name="price" value={customer.price} onChange={handleCustomerChange} type="number" placeholder="Rental Price" />
 
         <label><strong>Extras</strong></label>
-        <div className={styles.extrasContainer}>
+        <div className="extrasContainer">
           {extras.map((extra, i) => (
-            <div key={i} className={styles.extrasItem}>
+            <div key={i} className="extrasItem">
               <input
                 placeholder="Extra Name"
                 value={extra.name}
@@ -133,25 +131,25 @@ export default function Home() {
                 value={extra.price}
                 onChange={e => handleExtraChange(i, 'price', e.target.value)}
               />
-              <button onClick={() => removeExtra(i)} className={styles.removeBtn}>×</button>
+              <button onClick={() => removeExtra(i)} className="removeBtn">×</button>
             </div>
           ))}
-          <button onClick={addExtra} className={styles.addExtraBtn}>+ Add Extra</button>
+          <button onClick={addExtra} className="addExtraBtn">+ Add Extra</button>
         </div>
 
-        <div className={styles.total}>Total: ₹ {total.toFixed(2)}</div>
-        <button className={styles.submitBtn} onClick={(e) => e.preventDefault()}>Submit</button>
+        <div className="total">Total: ₹ {total.toFixed(2)}</div>
+        <button className="submitBtn" onClick={(e) => e.preventDefault()}>Submit</button>
       </div>
 
       {/* Preview */}
-      <div className={styles.previewBox}>
+      <div className="previewBox">
         <div>
           {template.greetingMessage && <p>{renderTemplate(template.greetingMessage, { ...template, ...customer, total })}</p>}
           {template.body && <p>{renderTemplate(template.body, { ...template, ...customer, total })}</p>}
           <p><strong>Name:</strong> {customer.name} ({customer.number})</p>
           <p><strong>Contact:</strong> {template.contactName} ({template.contactNumber})</p>
           {renderExtrasTable()}
-          <p className={styles.total}>Total: ₹ {total.toFixed(2)}</p>
+          <p className="total">Total: ₹ {total.toFixed(2)}</p>
           {template.notes && <p>{renderTemplate(template.notes, { ...template, ...customer, total })}</p>}
           {template.thankyou_notes && <p>{renderTemplate(template.thankyou_notes, { ...template, ...customer, total })}</p>}
         </div>
