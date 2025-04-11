@@ -56,22 +56,22 @@ export default function Home() {
       .replace(/{{\s*total\s*}}/g, `₹${total.toFixed(2)}`);
   };
 
-  const handleDownload = async () => {
-    const element = document.getElementById('previewContent');
-    if (!element) return;
+  // const handleDownload = async () => {
+  //   const element = document.getElementById('previewContent');
+  //   if (!element) return;
   
-    const html2pdf = (await import('html2pdf.js')).default;
+  //   const html2pdf = (await import('html2pdf.js')).default;
   
-    html2pdf()
-      .from(element)
-      .set({
-        margin: 0.5,
-        filename: `${customer.name || 'preview'}.pdf`,
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      })
-      .save();
-  };
+  //   html2pdf()
+  //     .from(element)
+  //     .set({
+  //       margin: 0.5,
+  //       filename: `${customer.name || 'preview'}.pdf`,
+  //       html2canvas: { scale: 2 },
+  //       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  //     })
+  //     .save();
+  // };
   
 
   useEffect(() => {
@@ -191,10 +191,10 @@ export default function Home() {
       </div>
 
       {/* Preview */}
-      <button className="downloadBtn" onClick={handleDownload}>
+      {/* <button className="downloadBtn" onClick={handleDownload}>
         ⬇️ Download PDF
-      </button>
-      <div className="previewBox" id="previewContent">
+      </button> */}
+      <div className="previewBox mb-40" id="previewContent">
       
         <div>
           {template.greetingMessage && <p>{renderTemplate(template.greetingMessage, { ...template, ...customer, total })}</p>}
