@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRef } from 'react';
 
 export default function Home() {
+  const previewRef = useRef<HTMLDivElement>(null);
+
   const [template, setTemplate] = useState({
     contactName: 'John Doe',
     contactNumber: '9876543210',
@@ -53,6 +56,24 @@ export default function Home() {
       .replace(/{{\s*total\s*}}/g, `₹${total.toFixed(2)}`);
   };
 
+  const handleDownload = async () => {
+    const element = document.getElementById('previewContent');
+    if (!element) return;
+  
+    const html2pdf = (await import('html2pdf.js')).default;
+  
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 0.5,
+        filename: `${customer.name || 'preview'}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      })
+      .save();
+  };
+  
+
   useEffect(() => {
     const main = parseFloat(customer.price) || 0;
     const extraTotal = extras.reduce((sum, e) => sum + parseFloat(e.price?.toString() || '0'), 0);
@@ -97,16 +118,44 @@ export default function Home() {
 
   return (
     <div className="container">
-      {/* Template Form */}
-      <div className="formBox">
-        <h2>Template Details</h2>
-        {Object.keys(template).map(key => (
-          (key === 'body' || key.includes('notes')) ? (
-            <textarea key={key} name={key} value={template[key as keyof typeof template]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
-          ) : (
-            <input key={key} name={key} value={template[key as keyof typeof template]} onChange={handleTemplateChange} placeholder={key.replace(/_/g, ' ')} />
-          )
-        ))}
+      {/* Template Form & Variables */}
+      <div className="formSection">
+        {/* Template Form */}
+        <div className="formBox">
+          <h2>Template Details</h2>
+          {Object.keys(template).map(key =>
+            key === 'body' || key.includes('notes') ? (
+              <textarea
+                key={key}
+                name={key}
+                value={template[key as keyof typeof template]}
+                onChange={handleTemplateChange}
+                placeholder={key.replace(/_/g, ' ')}
+              />
+            ) : (
+              <input
+                key={key}
+                name={key}
+                value={template[key as keyof typeof template]}
+                onChange={handleTemplateChange}
+                placeholder={key.replace(/_/g, ' ')}
+              />
+            )
+          )}
+        </div>
+
+        {/* Variables List */}
+        <div className="formBox variableBox">
+          <h2>Available Variables</h2>
+          <ul>
+            <li><code>{'{{name}}'}</code> - Customer name</li>
+            <li><code>{'{{number}}'}</code> - Customer number</li>
+            <li><code>{'{{price}}'}</code> - Rental price</li>
+            <li><code>{'{{contact_name}}'}</code> - Contact name</li>
+            <li><code>{'{{contact_number}}'}</code> - Contact number</li>
+            <li><code>{'{{total}}'}</code> - Total amount</li>
+          </ul>
+        </div>
       </div>
 
       {/* Customer Form */}
@@ -142,7 +191,11 @@ export default function Home() {
       </div>
 
       {/* Preview */}
-      <div className="previewBox">
+      <button className="downloadBtn" onClick={handleDownload}>
+        ⬇️ Download PDF
+      </button>
+      <div className="previewBox" id="previewContent">
+      
         <div>
           {template.greetingMessage && <p>{renderTemplate(template.greetingMessage, { ...template, ...customer, total })}</p>}
           {template.body && <p>{renderTemplate(template.body, { ...template, ...customer, total })}</p>}
