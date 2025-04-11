@@ -23,11 +23,11 @@ export default function Home() {
   const [extras, setExtras] = useState([{ name: '', price: '' }]);
   const [total, setTotal] = useState(0);
 
-  const handleTemplateChange = e:any => {
+  const handleTemplateChange = (e) => {
     setTemplate({ ...template, [e.target.name]: e.target.value });
   };
 
-  const handleCustomerChange = e:any => {
+  const handleCustomerChange = (e) => {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   };
 
@@ -41,7 +41,7 @@ export default function Home() {
     setExtras([...extras, { name: '', price: '' }]);
   };
 
-  const removeExtra = index: any => {
+  const removeExtra = (index) => {
     setExtras(extras.filter((_, i) => i !== index));
   };
 
