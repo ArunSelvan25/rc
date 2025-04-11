@@ -120,3 +120,7 @@ table th {
     grid-template-columns: 1fr;
   }
 }
+
+.mb-40 {
+  margin-bottom: 40px;
+}
