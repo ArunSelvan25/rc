@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from 'react';
-import styles from './PricePreview.module.css';
 import dynamic from 'next/dynamic';
 
 export default function Home() {
