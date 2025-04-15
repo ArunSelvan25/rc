@@ -7,6 +7,7 @@ export default function Home() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const [template, setTemplate] = useState({
+    title: 'Rental Receipt',
     contactName: process.env.NEXT_PUBLIC_CONTACT_NAME || 'John Doe',
     contactNumber:  process.env.NEXT_PUBLIC_CONTACT_NUMBER || '1234567890',
     greetingMessage: 'Dear {{name}},',
@@ -152,18 +153,18 @@ export default function Home() {
         </div>
 
         <div className="total">Total: ₹ {total.toFixed(2)}</div>
-        {/* <button className="submitBtn" onClick={(e) => e.preventDefault()}>Submit</button> */}
       </div>
 
       <div className="previewBox" id="previewContent">
         <div>
+          {template.title && <p><strong>{template.title}</strong></p>}
           {template.greetingMessage && <p>{renderTemplate(template.greetingMessage, { ...template, ...customer, total })}</p>}
           {template.body && <p>{renderTemplate(template.body, { ...template, ...customer, total })}</p>}
-          <p><strong>Name:</strong> {customer.name} ({customer.number})</p>
-          <p><strong>Contact:</strong> {template.contactName} ({template.contactNumber})</p>
+          {customer.name && <p><strong>Tenant/Property:</strong> {customer.name} {customer.number && `(${customer.number})`}</p>}
           {renderExtrasTable()}
           <p className="total">Total: ₹ {total.toFixed(2)}</p>
           {template.notes && <p>{renderTemplate(template.notes, { ...template, ...customer, total })}</p>}
+
           {template.thankyou_notes && <p>{renderTemplate(template.thankyou_notes, { ...template, ...customer, total })}</p>}
         </div>
         {/* Preview */}
@@ -202,69 +203,57 @@ export default function Home() {
       </div>
 
       {/* Variable List */}
-      {/* <div className="formBox variableBox">
-        <h2>Available Variables</h2>
-        <ul>
-          <li><code>{'{{name}}'}</code> - Customer name</li>
-          <li><code>{'{{number}}'}</code> - Customer number</li>
-          <li><code>{'{{price}}'}</code> - Rental price</li>
-          <li><code>{'{{contact_name}}'}</code> - Contact name</li>
-          <li><code>{'{{contact_number}}'}</code> - Contact number</li>
-          <li><code>{'{{total}}'}</code> - Total amount</li>
-        </ul>
-      </div> */}
-
-<div className="formBox variableBox">
-  <h2 className="text-xl font-semibold mb-4">Available Variables</h2>
-  <div className="overflow-x-auto">
-    <table className="min-w-full table-auto border border-gray-300">
-      <thead className="bg-gray-100">
-        <tr>
-          <th className="px-4 py-2 text-left border-b">Variable</th>
-          <th className="px-4 py-2 text-left border-b">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className="px-4 py-2 border-b">
-            <code title="Customer name">{'{{name}}'}</code>
-          </td>
-          <td className="px-4 py-2 border-b">Customer name</td>
-        </tr>
-        <tr>
-          <td className="px-4 py-2 border-b">
-            <code title="Customer number">{'{{number}}'}</code>
-          </td>
-          <td className="px-4 py-2 border-b">Customer number</td>
-        </tr>
-        <tr>
-          <td className="px-4 py-2 border-b">
-            <code title="Rental price">{'{{price}}'}</code>
-          </td>
-          <td className="px-4 py-2 border-b">Rental price</td>
-        </tr>
-        <tr>
-          <td className="px-4 py-2 border-b">
-            <code title="Contact name">{'{{contact_name}}'}</code>
-          </td>
-          <td className="px-4 py-2 border-b">Contact name</td>
-        </tr>
-        <tr>
-          <td className="px-4 py-2 border-b">
-            <code title="Contact number">{'{{contact_number}}'}</code>
-          </td>
-          <td className="px-4 py-2 border-b">Contact number</td>
-        </tr>
-        <tr>
-          <td className="px-4 py-2">
-            <code title="Total amount">{'{{total}}'}</code>
-          </td>
-          <td className="px-4 py-2">Total amount</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+      <div className="formBox variableBox">
+        <h2 className="text-xl font-semibold mb-4">Available Variables</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border border-gray-300">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 text-left border-b">Variable</th>
+                <th className="px-4 py-2 text-left border-b">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Customer name">{'{{name}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Customer name</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Customer number">{'{{number}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Customer number</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Rental price">{'{{price}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Rental price</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Contact name">{'{{contact_name}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Contact name</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Contact number">{'{{contact_number}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Contact number</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2">
+                  <code title="Total amount">{'{{total}}'}</code>
+                </td>
+                <td className="px-4 py-2">Total amount</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
 
     </div>
