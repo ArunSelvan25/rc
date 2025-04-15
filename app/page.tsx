@@ -7,8 +7,8 @@ export default function Home() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const [template, setTemplate] = useState({
-    contactName: 'John Doe',
-    contactNumber: '9876543210',
+    contactName: process.env.NEXT_PUBLIC_CONTACT_NAME || 'John Doe',
+    contactNumber:  process.env.NEXT_PUBLIC_CONTACT_NUMBER || '1234567890',
     greetingMessage: 'Dear {{name}},',
     body: 'Thanks for choosing us! Your rent is {{price}}.',
     notes: 'Pay before due date. Contact {{contact_name}} ({{contact_number}}) for queries.',
