@@ -56,22 +56,9 @@ export default function Home() {
       .replace(/{{\s*total\s*}}/g, `₹${total.toFixed(2)}`);
   };
 
-  // const handleDownload = async () => {
-  //   const element = document.getElementById('previewContent');
-  //   if (!element) return;
-  
-  //   const html2pdf = (await import('html2pdf.js')).default;
-  
-  //   html2pdf()
-  //     .from(element)
-  //     .set({
-  //       margin: 0.5,
-  //       filename: `${customer.name || 'preview'}.pdf`,
-  //       html2canvas: { scale: 2 },
-  //       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  //     })
-  //     .save();
-  // };
+  const handleDownload = () => {
+    window.print();
+  }
   
 
   useEffect(() => {
@@ -118,52 +105,30 @@ export default function Home() {
 
   return (
     <div className="container">
-      {/* Template Form & Variables */}
-      <div className="formSection">
-        {/* Template Form */}
-        <div className="formBox">
-          <h2>Template Details</h2>
-          {Object.keys(template).map(key =>
-            key === 'body' || key.includes('notes') ? (
-              <textarea
-                key={key}
-                name={key}
-                value={template[key as keyof typeof template]}
-                onChange={handleTemplateChange}
-                placeholder={key.replace(/_/g, ' ')}
-              />
-            ) : (
-              <input
-                key={key}
-                name={key}
-                value={template[key as keyof typeof template]}
-                onChange={handleTemplateChange}
-                placeholder={key.replace(/_/g, ' ')}
-              />
-            )
-          )}
-        </div>
-
-        {/* Variables List */}
-        <div className="formBox variableBox">
-          <h2>Available Variables</h2>
-          <ul>
-            <li><code>{'{{name}}'}</code> - Customer name</li>
-            <li><code>{'{{number}}'}</code> - Customer number</li>
-            <li><code>{'{{price}}'}</code> - Rental price</li>
-            <li><code>{'{{contact_name}}'}</code> - Contact name</li>
-            <li><code>{'{{contact_number}}'}</code> - Contact number</li>
-            <li><code>{'{{total}}'}</code> - Total amount</li>
-          </ul>
-        </div>
-      </div>
-
+    {/* Top Section - Customer Form and Preview */}
+    <div className="section">
       {/* Customer Form */}
       <div className="formBox">
         <h2>Customer Details</h2>
-        <input name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Customer Name" />
-        <input name="number" value={customer.number} onChange={handleCustomerChange} placeholder="Customer Number" />
-        <input name="price" value={customer.price} onChange={handleCustomerChange} type="number" placeholder="Rental Price" />
+        <input
+          name="name"
+          value={customer.name}
+          onChange={handleCustomerChange}
+          placeholder="Customer Name"
+        />
+        <input
+          name="number"
+          value={customer.number}
+          onChange={handleCustomerChange}
+          placeholder="Customer Number"
+        />
+        <input
+          name="price"
+          value={customer.price}
+          onChange={handleCustomerChange}
+          type="number"
+          placeholder="Rental Price"
+        />
 
         <label><strong>Extras</strong></label>
         <div className="extrasContainer">
@@ -180,22 +145,17 @@ export default function Home() {
                 value={extra.price}
                 onChange={e => handleExtraChange(i, 'price', e.target.value)}
               />
-              <button onClick={() => removeExtra(i)} className="removeBtn">×</button>
+              <button onClick={() => removeExtra(i)} className="removeBtn mb-15">×</button>
             </div>
           ))}
           <button onClick={addExtra} className="addExtraBtn">+ Add Extra</button>
         </div>
 
         <div className="total">Total: ₹ {total.toFixed(2)}</div>
-        <button className="submitBtn" onClick={(e) => e.preventDefault()}>Submit</button>
+        {/* <button className="submitBtn" onClick={(e) => e.preventDefault()}>Submit</button> */}
       </div>
 
-      {/* Preview */}
-      {/* <button className="downloadBtn" onClick={handleDownload}>
-        ⬇️ Download PDF
-      </button> */}
-      <div className="previewBox mb-40" id="previewContent">
-      
+      <div className="previewBox" id="previewContent">
         <div>
           {template.greetingMessage && <p>{renderTemplate(template.greetingMessage, { ...template, ...customer, total })}</p>}
           {template.body && <p>{renderTemplate(template.body, { ...template, ...customer, total })}</p>}
@@ -206,7 +166,108 @@ export default function Home() {
           {template.notes && <p>{renderTemplate(template.notes, { ...template, ...customer, total })}</p>}
           {template.thankyou_notes && <p>{renderTemplate(template.thankyou_notes, { ...template, ...customer, total })}</p>}
         </div>
+        {/* Preview */}
+        <div>
+          <button className="downloadBtn" onClick={handleDownload}>
+            Download PDF
+          </button>
+        </div>
       </div>
     </div>
+
+    {/* Bottom Section - Template Form and Variables */}
+    <div className="section">
+      {/* Template Form */}
+      <div className="formBox">
+        <h2>Template Details</h2>
+        {Object.keys(template).map(key =>
+          key === 'body' || key.includes('notes') ? (
+            <textarea
+              key={key}
+              name={key}
+              value={template[key as keyof typeof template]}
+              onChange={handleTemplateChange}
+              placeholder={key.replace(/_/g, ' ')}
+            />
+          ) : (
+            <input
+              key={key}
+              name={key}
+              value={template[key as keyof typeof template]}
+              onChange={handleTemplateChange}
+              placeholder={key.replace(/_/g, ' ')}
+            />
+          )
+        )}
+      </div>
+
+      {/* Variable List */}
+      {/* <div className="formBox variableBox">
+        <h2>Available Variables</h2>
+        <ul>
+          <li><code>{'{{name}}'}</code> - Customer name</li>
+          <li><code>{'{{number}}'}</code> - Customer number</li>
+          <li><code>{'{{price}}'}</code> - Rental price</li>
+          <li><code>{'{{contact_name}}'}</code> - Contact name</li>
+          <li><code>{'{{contact_number}}'}</code> - Contact number</li>
+          <li><code>{'{{total}}'}</code> - Total amount</li>
+        </ul>
+      </div> */}
+
+<div className="formBox variableBox">
+  <h2 className="text-xl font-semibold mb-4">Available Variables</h2>
+  <div className="overflow-x-auto">
+    <table className="min-w-full table-auto border border-gray-300">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="px-4 py-2 text-left border-b">Variable</th>
+          <th className="px-4 py-2 text-left border-b">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="px-4 py-2 border-b">
+            <code title="Customer name">{'{{name}}'}</code>
+          </td>
+          <td className="px-4 py-2 border-b">Customer name</td>
+        </tr>
+        <tr>
+          <td className="px-4 py-2 border-b">
+            <code title="Customer number">{'{{number}}'}</code>
+          </td>
+          <td className="px-4 py-2 border-b">Customer number</td>
+        </tr>
+        <tr>
+          <td className="px-4 py-2 border-b">
+            <code title="Rental price">{'{{price}}'}</code>
+          </td>
+          <td className="px-4 py-2 border-b">Rental price</td>
+        </tr>
+        <tr>
+          <td className="px-4 py-2 border-b">
+            <code title="Contact name">{'{{contact_name}}'}</code>
+          </td>
+          <td className="px-4 py-2 border-b">Contact name</td>
+        </tr>
+        <tr>
+          <td className="px-4 py-2 border-b">
+            <code title="Contact number">{'{{contact_number}}'}</code>
+          </td>
+          <td className="px-4 py-2 border-b">Contact number</td>
+        </tr>
+        <tr>
+          <td className="px-4 py-2">
+            <code title="Total amount">{'{{total}}'}</code>
+          </td>
+          <td className="px-4 py-2">Total amount</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    </div>
+  </div>
   );
 }
