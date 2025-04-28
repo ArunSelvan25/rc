@@ -1,28 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Home() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const [template, setTemplate] = useState({
-    title: 'Rental Receipt',
+    title: 'Rental Payment Receipt',
     contactName: process.env.NEXT_PUBLIC_CONTACT_NAME || 'John Doe',
-    contactNumber:  process.env.NEXT_PUBLIC_CONTACT_NUMBER || '1234567890',
-    greetingMessage: 'Dear {{name}},',
-    body: 'Thanks for choosing us! Your rent is {{price}}.',
-    notes: 'Pay before due date. Contact {{contact_name}} ({{contact_number}}) for queries.',
-    thankyou_notes: 'Thank you for your business, {{name}}!',
+    contactNumber: process.env.NEXT_PUBLIC_CONTACT_NUMBER || '1234567890',
+    greetingMessage: 'Hello {{name}},',
+    body: 'This is a confirmation that your monthly rent amount of {{price}} has been generated for {{rentMonth}}.',
+    notes: 'Please ensure the payment is completed by {{dueDate}}. For any assistance, feel free to contact {{contact_name}} at {{contact_number}}.',
+    thankyou_notes: 'Thank you!',
   });
 
   const [customer, setCustomer] = useState({
     name: '',
     number: '',
     price: '',
+    rentMonth: '',
+    dueDate: ''
   });
 
-  const [extras, setExtras] = useState([{ name: '', price: '' }]);
+  const [extras, setExtras] = useState([{ name: '', price: '', rentMonth: '', dueDate: '' }]);
   const [total, setTotal] = useState(0);
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -40,7 +41,7 @@ export default function Home() {
   };
 
   const addExtra = () => {
-    setExtras([...extras, { name: '', price: '' }]);
+    setExtras([...extras, { name: '', price: '', rentMonth: '', dueDate: '' }]);
   };
 
   const removeExtra = (index: number) => {
@@ -51,6 +52,8 @@ export default function Home() {
     return tpl
       .replace(/{{\s*name\s*}}/g, data.name || '')
       .replace(/{{\s*number\s*}}/g, data.number || '')
+      .replace(/{{\s*rentMonth\s*}}/g, data.rentMonth || '')
+      .replace(/{{\s*dueDate\s*}}/g, data.dueDate || '')
       .replace(/{{\s*price\s*}}/g, `₹${parseFloat(data.price || 0).toFixed(2)}`)
       .replace(/{{\s*contact_name\s*}}/g, data.contactName || '')
       .replace(/{{\s*contact_number\s*}}/g, data.contactNumber || '')
@@ -122,6 +125,18 @@ export default function Home() {
           value={customer.number}
           onChange={handleCustomerChange}
           placeholder="Customer Number"
+        />
+        <input
+          name="rentMonth"
+          value={customer.rentMonth}
+          onChange={handleCustomerChange}
+          placeholder="Rent month"
+        />
+        <input
+          name="dueDate"
+          value={customer.dueDate}
+          onChange={handleCustomerChange}
+          placeholder="Due date"
         />
         <input
           name="price"
@@ -225,6 +240,18 @@ export default function Home() {
                   <code title="Customer number">{'{{number}}'}</code>
                 </td>
                 <td className="px-4 py-2 border-b">Customer number</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Customer number">{'{{dueDate}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Payment last date</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-b">
+                  <code title="Customer number">{'{{rentMonth}}'}</code>
+                </td>
+                <td className="px-4 py-2 border-b">Rent for month</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-b">
